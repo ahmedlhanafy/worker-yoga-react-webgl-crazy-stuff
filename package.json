@@ -1,0 +1,23 @@
+{
+  "name": "yoga-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "resize-observer-polyfill": "^1.5.0",
+    "yoga-layout": "^1.9.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.73.0"
+  }
+}
