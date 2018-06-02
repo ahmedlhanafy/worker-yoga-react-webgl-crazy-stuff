@@ -2,45 +2,52 @@
 
 import omit from 'lodash.omit';
 import pick from 'lodash.pick';
-import type { UIManager } from './UIManager';
 import ShadowNode from './ShadowNode';
-import { shadowNodeStyles } from './Config';
-import type { Props } from './Config';
+import { shadowNodeStyles } from '../../../Config';
+import type { Props } from '../../../Config';
 
 export default class VTree {
   rootId: number;
   index: number;
-  uiManager: UIManager;
   nodesMap: { [number]: ShadowNode };
+  uiManager;
 
-  constructor(uiManager: UIManager) {
-    this.uiManager = uiManager;
+  constructor(nativeModules) {
     this.nodesMap = {};
     this.index = 0;
+    this.uiManager = nativeModules.uiManager;
+  }
 
-    this.rootId = this.createElement(
+  async init() {
+    const dimensions = await this.uiManager.getAvailableSize();
+
+    this.rootId = await this.createElement(
       'div',
       {
-        style: { ...uiManager.availableSize, backgroundColor: 'red' },
+        style: { ...dimensions, backgroundColor: 'pink' },
       },
       true,
     );
 
-    this.uiManager.onResize(this.updateSize);
-
-    this.calculateLayout(
-      uiManager.availableSize.width,
-      uiManager.availableSize.height,
-    );
+    // this.this.uiManager.onResize(this.updateSize);
+    this.calculateLayout(dimensions.width, dimensions.height);
   }
 
-  createElement(type: string, props: Props, isRoot: boolean = false) {
+  getRootId = () => {
+    return this.rootId;
+  };
+
+  async createElement(
+    type: string,
+    props: Props,
+    isRoot: boolean = false,
+  ): Promise<number> {
     const id = this.index++;
 
     // Native layer
     const nonLayoutStyles = omit(props.style, shadowNodeStyles);
 
-    this.uiManager.createElement(
+    await this.uiManager.createElement(
       id,
       type,
       omit(props, 'style'),
@@ -56,7 +63,7 @@ export default class VTree {
     return id;
   }
 
-  addChild(id: number, parentId: number) {
+  async addChild(id: number, parentId: number) {
     // Virtual layer
     const childNode = this.nodesMap[id];
     const parentNode = this.nodesMap[parentId];
@@ -64,12 +71,10 @@ export default class VTree {
     parentNode.addChild(childNode);
 
     // Native layer
-    this.uiManager.addChild(id, parentId);
+    await this.uiManager.addChild(id, parentId);
 
-    this.calculateLayout(
-        this.uiManager.availableSize.width,
-        this.uiManager.availableSize.height,
-      );
+    const dimensions = await this.uiManager.getAvailableSize();
+    this.calculateLayout(dimensions.width, dimensions.height);
   }
 
   updateSize = (width: number, height: number) => {
@@ -78,7 +83,7 @@ export default class VTree {
 
   calculateLayout = (width: number, height: number) => {
     const rootShadowNode = this.nodesMap[this.rootId];
-    
+
     rootShadowNode.backingNode.calculateLayout(width, height);
 
     this.applyLayoutRec(rootShadowNode);
@@ -96,9 +101,9 @@ export default class VTree {
     this.applyLayout(node);
   };
 
-  applyLayout = (node: ShadowNode) => {
+  applyLayout = async (node: ShadowNode) => {
     const layout = node.backingNode.getComputedLayout();
     //$FlowFixMe
-    this.uiManager.updateStyles(node.id, layout);
+    await this.uiManager.updateStyles(node.id, layout);
   };
 }

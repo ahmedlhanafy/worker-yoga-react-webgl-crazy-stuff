@@ -1,10 +1,10 @@
 /* @flow */
 
-import optimizedResizeObserver from './utils/optimizedResize';
-import type { DOMProps, DOMStyles } from './Config';
+import optimizedResizeObserver from '../utils/optimizedResize';
+import type { DOMProps, DOMStyles } from '../../Config';
 
 export interface UIManager {
-  availableSize: { width: number, height: number };
+  getAvailableSize: () => { width: number, height: number };
   createElement(
     id: number,
     type: string,
@@ -23,15 +23,15 @@ export interface UIManager {
 export default class DOMUIManager implements UIManager {
   root: HTMLElement;
   elementsMap: { [number]: HTMLElement };
-  availableSize: { width: number, height: number };
 
   constructor() {
     this.elementsMap = {};
-    this.availableSize = {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    };
   }
+
+  getAvailableSize = () => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   onResize(callback: (width: number, height: number) => void) {
     optimizedResizeObserver.subscribe(() =>
@@ -48,7 +48,10 @@ export default class DOMUIManager implements UIManager {
   ) {
     const element = document.createElement(type);
 
-    if (isRoot) this.root = element;
+    if (isRoot) {
+      this.root = element;
+      document.body.appendChild(this.root);
+    }
     this.elementsMap[id] = element;
 
     element.style.position = 'absolute';
@@ -103,10 +106,5 @@ export default class DOMUIManager implements UIManager {
     parentElement.removeChild(childElement);
 
     this.destroyElement(id);
-  }
-
-  render() {
-    //$FlowFixMe
-    document.body.appendChild(this.root);
   }
 }

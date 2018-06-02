@@ -1,8 +1,8 @@
 /* @flow */
 
 import * as yoga from 'yoga-layout';
-import { shadowNodeStyles } from './Config';
-import type { YogaStyles } from './Config';
+import { shadowNodeStyles } from '../../../Config';
+import type { YogaStyles } from '../../../Config';
 
 export default class ShadowNode {
   id: number;
