@@ -14,6 +14,7 @@
     "babel": "^6.23.0",
     "comlink": "^2.3.6",
     "comlinkjs": "^2.4.1",
+    "konva": "^2.1.3",
     "lodash.includes": "^4.3.0",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",

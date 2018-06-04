@@ -1,4 +1,4 @@
-import { initNativeModules } from '../../nativeModules';
+import initNativeModules from '../../nativeModules/initializer';
 import VTree from './VTree';
 
 const nativeModules = initNativeModules(self);

@@ -1,8 +1,8 @@
 /* @flow */
 
 import * as yoga from 'yoga-layout';
-import { shadowNodeStyles } from '../../../Config';
-import type { YogaStyles } from '../../../Config';
+import { shadowNodeStyles } from './Config';
+import type { YogaStyles } from './Config';
 
 export default class ShadowNode {
   id: number;
@@ -59,9 +59,33 @@ export default class ShadowNode {
           case 'padding':
             this.backingNode.setPadding(yoga.EDGE_ALL, styleVal);
             break;
+          case 'paddingLeft':
+            this.backingNode.setPadding(yoga.EDGE_LEFT, styleVal);
+            break;
+          case 'paddingRight':
+            this.backingNode.setPadding(yoga.EDGE_RIGHT, styleVal);
+            break;
+          case 'paddingTop':
+            this.backingNode.setPadding(yoga.EDGE_TOP, styleVal);
+            break;
+          case 'paddingBottom':
+            this.backingNode.setPadding(yoga.EDGE_BOTTOM, styleVal);
+            break;
           case 'margin':
             //$FlowFixMe
             this.backingNode.setMargin(yoga.EDGE_ALL, styleVal);
+            break;
+          case 'marginLeft':
+            this.backingNode.setMargin(yoga.EDGE_LEFT, styleVal);
+            break;
+          case 'marginRight':
+            this.backingNode.setMargin(yoga.EDGE_RIGHT, styleVal);
+            break;
+          case 'marginTop':
+            this.backingNode.setMargin(yoga.EDGE_TOP, styleVal);
+            break;
+          case 'marginBottom':
+            this.backingNode.setMargin(yoga.EDGE_BOTTOM, styleVal);
             break;
           case 'flexDirection':
             const flexDirectionConstants = {
@@ -97,6 +121,16 @@ export default class ShadowNode {
             this.backingNode.setJustifyContent(
               justifyContentConstants[styleVal],
             );
+            break;
+          case 'position':
+            const positionConstants = {
+              absolute: yoga.POSITION_TYPE_ABSOLUTE,
+              relative: yoga.POSITION_TYPE_RELATIVE,
+            };
+            this.backingNode.setPositionType(positionConstants[styleVal]);
+            break;
+          case 'flex':
+            this.backingNode.setFlex(styleVal);
             break;
         }
       }

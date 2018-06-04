@@ -3,8 +3,8 @@
 import omit from 'lodash.omit';
 import pick from 'lodash.pick';
 import ShadowNode from './ShadowNode';
-import { shadowNodeStyles } from '../../../Config';
-import type { Props } from '../../../Config';
+import { shadowNodeStyles } from './Config';
+import type { Props } from './Config';
 
 export default class VTree {
   rootId: number;
@@ -15,7 +15,7 @@ export default class VTree {
   constructor(nativeModules) {
     this.nodesMap = {};
     this.index = 0;
-    this.uiManager = nativeModules.uiManager;
+    this.uiManager = nativeModules.DOMUIManager;
   }
 
   async init() {
@@ -24,7 +24,7 @@ export default class VTree {
     this.rootId = await this.createElement(
       'div',
       {
-        style: { ...dimensions, backgroundColor: 'pink' },
+        style: { ...dimensions },
       },
       true,
     );

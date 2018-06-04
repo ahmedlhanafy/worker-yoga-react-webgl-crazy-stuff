@@ -10,6 +10,11 @@ export type DOMStyles = {|
   left?: number | string,
   right?: number | string,
   backgroundColor?: string,
+  borderRadius?: number | string,
+  shadowColor?: string,
+  shadowOffset?: { x: number, y: number },
+  shadowBlur?: number,
+  zIndex?: number
 |};
 
 export type YogaStyles = {
@@ -41,8 +46,18 @@ export const shadowNodeStyles = [
   'width',
   'height',
   'padding',
+  'paddingLeft',
+  'paddingRight',
+  'paddingTop',
+  'paddingBottom',
   'margin',
+  'marginLeft',
+  'marginRight',
+  'marginTop',
+  'marginBottom',
   'flexDirection',
   'justifyContent',
   'alignItems',
+  'position',
+  'flex',
 ];

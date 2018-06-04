@@ -1,24 +1,8 @@
 /* @flow */
 
 import optimizedResizeObserver from '../utils/optimizedResize';
-import type { DOMProps, DOMStyles } from '../../Config';
-
-export interface UIManager {
-  getAvailableSize: () => { width: number, height: number };
-  createElement(
-    id: number,
-    type: string,
-    props: DOMProps,
-    styles: DOMStyles,
-    isRoot: boolean,
-  ): void;
-  destroyElement(id: number): void;
-  onResize: ((width: number, height: number) => void) => void;
-  updateProps(id: number, props: DOMProps): void;
-  updateStyles(id: number, styles: DOMStyles): void;
-  addChild(id: number, parentId: number): void;
-  removeChild(id: number, parentId: number): void;
-}
+import type { UIManager } from '../UIManager/types';
+import type { DOMProps, DOMStyles } from '../../src/modules/VTree/Config';
 
 export default class DOMUIManager implements UIManager {
   root: HTMLElement;
@@ -50,6 +34,7 @@ export default class DOMUIManager implements UIManager {
 
     if (isRoot) {
       this.root = element;
+      //$FlowFixMe
       document.body.appendChild(this.root);
     }
     this.elementsMap[id] = element;
@@ -67,13 +52,37 @@ export default class DOMUIManager implements UIManager {
   _setProps(element: HTMLElement, props: DOMProps) {}
 
   _setStyles(element: HTMLElement, styles: DOMStyles) {
-    Object.keys(styles).forEach(
-      //$FlowFixMe
-      styleKey => (element.style[styleKey] = `${styles[styleKey]}px`),
-    );
-    if (styles.backgroundColor) {
-      element.style.backgroundColor = styles.backgroundColor;
-    }
+    const boxShadowArr = ['', '', '', ''];
+    Object.keys(styles).forEach(styleKey => {
+      const styleVal = styles[styleKey];
+      switch (styleKey) {
+        case 'shadowColor':
+          boxShadowArr[3] = styleVal;
+          break;
+
+        case 'shadowOffset':
+          boxShadowArr[0] = `${styleVal.x}px`;
+          boxShadowArr[1] = `${styleVal.y}px`;
+          break;
+
+        case 'shadowBlur':
+          boxShadowArr[2] = `${styleVal}px`;
+          break;
+
+        case 'backgroundColor':
+          element.style.backgroundColor = styleVal;
+          break;
+
+        case 'zIndex':
+          element.style.zIndex = parseInt(styleVal);
+          break;
+
+        default:
+          element.style[styleKey] = `${styleVal}px`;
+          break;
+      }
+    });
+    element.style.boxShadow = boxShadowArr.join(' ');
   }
 
   updateProps(id: number, props: DOMProps) {
