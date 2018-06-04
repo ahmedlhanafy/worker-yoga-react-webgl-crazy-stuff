@@ -48,7 +48,7 @@ export default class CanvasUIManager implements UIManager {
     styles: DOMStyles,
     isRoot: boolean = false,
   ) {
-    const node = new Node();
+    const node = new Node(type);
 
     if (isRoot) this.canvas.add(node.group);
 
@@ -62,7 +62,16 @@ export default class CanvasUIManager implements UIManager {
     delete this.nodesMap[id];
   }
 
-  _setProps(node: Node, props: DOMProps) {}
+  _setProps(node: Node, props: DOMProps) {
+    Object.keys(props).forEach(propName => {
+      const prop = props[propName];
+      switch (propName) {
+        case 'source':
+          node.setImageSource(prop);
+          break;
+      }
+    });
+  }
 
   _setStyles(node: Node, id: number, styles: DOMStyles) {
     Object.keys(styles).forEach(styleKey => {

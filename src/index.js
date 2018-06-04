@@ -46,7 +46,7 @@ import modules from './modules';
   const card = await vTree.createElement('div', {
     style: {
       width: '100%',
-      height: 320,
+      height: 420,
       backgroundColor: 'white',
       shadowColor: 'rgba(0,0,0,0.2)',
       shadowOffset: {
@@ -74,11 +74,12 @@ import modules from './modules';
     },
   });
 
-  const image = await vTree.createElement('div', {
+  const image = await vTree.createElement('img', {
     style: {
-      height: 140,
-      backgroundColor: '#00E5FF',
+      height: 240,
     },
+    source:
+      'https://images.pexels.com/photos/132037/pexels-photo-132037.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350',
   });
 
   const image1 = await vTree.createElement('div', {

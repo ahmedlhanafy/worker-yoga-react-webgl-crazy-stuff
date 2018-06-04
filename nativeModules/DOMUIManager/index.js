@@ -49,7 +49,16 @@ export default class DOMUIManager implements UIManager {
     delete this.elementsMap[id];
   }
 
-  _setProps(element: HTMLElement, props: DOMProps) {}
+  _setProps(element: HTMLElement, props: DOMProps) {
+    Object.keys(props).forEach(propName => {
+      const prop = props[propName];
+      switch (propName) {
+        case 'source':
+          if (element instanceof HTMLImageElement) element.src = prop;
+          break;
+      }
+    });
+  }
 
   _setStyles(element: HTMLElement, styles: DOMStyles) {
     const boxShadowArr = ['', '', '', ''];
