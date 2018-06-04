@@ -1,19 +1,16 @@
 /* @flow */
 
 import Konva from 'konva';
+import Node from './Node';
 import type { UIManager } from './types';
 import type { DOMProps, DOMStyles } from '../../src/modules/VTree/Config';
 
 export default class CanvasUIManager implements UIManager {
-  elementsMap: { [number]: Konva.Rect };
+  nodesMap: { [number]: Node };
   canvas: Konva.Layer;
-  parentGroups: { [number]: Konva.Group };
-  childrenGroups: { [number]: Konva.Group };
 
   constructor() {
-    this.elementsMap = {};
-    this.parentGroups = {};
-    this.childrenGroups = {};
+    this.nodesMap = {};
 
     const stage = new Konva.Stage({
       container: document.body,
@@ -51,126 +48,101 @@ export default class CanvasUIManager implements UIManager {
     styles: DOMStyles,
     isRoot: boolean = false,
   ) {
-    const element = new Konva.Rect({
-      width: 0,
-      height: 0,
-      strokeWidth: 0,
-    });
+    const node = new Node();
 
-    this.elementsMap[id] = element;
+    if (isRoot) this.canvas.add(node.group);
 
-    this._setProps(element, props);
-    this._setStyles(element, id, styles);
+    this.nodesMap[id] = node;
+
+    this._setProps(node, props);
+    this._setStyles(node, id, styles);
   }
 
   destroyElement(id: number) {
-    delete this.elementsMap[id];
+    delete this.nodesMap[id];
   }
 
-  _setProps(element: Konva.Rect, props: DOMProps) {}
+  _setProps(node: Node, props: DOMProps) {}
 
-  _setStyles(element: Konva.Rect, id: number, styles: DOMStyles) {
+  _setStyles(node: Node, id: number, styles: DOMStyles) {
     Object.keys(styles).forEach(styleKey => {
       const styleVal = styles[styleKey];
       switch (styleKey) {
         case 'height':
         case 'width':
-          element[styleKey](styleVal);
+          node.group[styleKey](styleVal);
+          node.element[styleKey](styleVal);
           break;
 
         case 'left':
-          if (!this.parentGroups[id]) element.x(styleVal);
+          node.group.x(styleVal);
           break;
 
         case 'top':
-          if (!this.parentGroups[id]) element.y(styleVal);
+          node.group.y(styleVal);
           break;
 
         case 'backgroundColor':
-          element.fill(styleVal);
+          node.element.fill(styleVal);
           break;
 
         case 'borderRadius':
-          element.cornerRadius(styleVal);
+          node.element.cornerRadius(styleVal);
           break;
 
         case 'shadowColor':
-          element.shadowEnabled(true);
-          element.shadowColor(styleVal);
+          node.element.shadowEnabled(true);
+          node.element.shadowColor(styleVal);
           break;
 
         case 'shadowOffset':
-          element.shadowEnabled(true);
-          element.shadowOffset(styleVal);
+          node.element.shadowEnabled(true);
+          node.element.shadowOffset(styleVal);
           break;
 
         case 'shadowBlur':
-          element.shadowEnabled(true);
-          element.shadowBlur(styleVal);
+          node.element.shadowEnabled(true);
+          node.element.shadowBlur(styleVal);
+          break;
+
+        case 'zIndex':
+          node.group.setZIndex(styleVal);
           break;
       }
     });
   }
 
   updateProps(id: number, props: DOMProps) {
-    const element = this.elementsMap[id];
+    const node = this.nodesMap[id];
 
-    if (!element) throw new Error('Element not found');
+    if (!node) throw new Error('Node not found');
 
-    this._setProps(element, props);
+    this._setProps(node, props);
+    // node.draw();
     this.canvas.draw();
   }
 
   updateStyles(id: number, styles: DOMStyles) {
-    const element = this.elementsMap[id];
+    const node = this.nodesMap[id];
 
-    if (!element) throw new Error('Element not found');
+    if (!node) throw new Error('Node not found');
 
-    this._setStyles(element, id, styles);
+    this._setStyles(node, id, styles);
+    // node.draw();
     this.canvas.draw();
   }
 
   addChild(id: number, parentId: number) {
-    const childElement = this.elementsMap[id];
-    const parentElement = this.elementsMap[parentId];
-
-    let parentGroup = this.parentGroups[parentId];
-
-    if (!parentGroup) {
-      /* Add a new group with the same coordinates as the parent element and reset 
-       and reset the parent group position
-       */
-      parentGroup = new Konva.Group({
-        x: parentElement.getAttr('x'),
-        y: parentElement.getAttr('y'),
-      });
-
-      parentGroup.add(parentElement);
-
-      parentElement.x(0);
-      parentElement.y(0);
-
-      this.parentGroups[parentId] = parentGroup;
-
-      // Add the newly created group to the canvas
-      const grandParentGroup = this.childrenGroups[parentId];
-      if (grandParentGroup) {
-        grandParentGroup.add(parentGroup);
-      } else {
-        this.canvas.add(parentGroup);
-      }
-    }
+    const childNode = this.nodesMap[id];
+    const parentNode = this.nodesMap[parentId];
 
     // Add the new child to the parent group
-    parentGroup.add(childElement);
-
-    // Connect children with their parent group
-    this.childrenGroups[id] = parentGroup;
+    parentNode.add(childNode);
   }
 
   removeChild(id: number, parentId: number) {
-    const childElement = this.elementsMap[id];
-    const parentElement = this.elementsMap[parentId];
+    const childElement = this.nodesMap[id];
+    const parentElement = this.nodesMap[parentId];
 
     //TODO
 

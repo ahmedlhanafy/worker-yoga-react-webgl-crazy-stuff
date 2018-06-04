@@ -76,10 +76,15 @@ import modules from './modules';
 
   const image = await vTree.createElement('div', {
     style: {
-      // width: '100%',
       height: 140,
       backgroundColor: '#00E5FF',
-      // borderRadius: 4
+    },
+  });
+
+  const image1 = await vTree.createElement('div', {
+    style: {
+      height: 140,
+      backgroundColor: '#651FFF',
     },
   });
 
@@ -137,47 +142,55 @@ import modules from './modules';
     },
   });
 
+  const cardContainer = await vTree.createElement('div', {
+    style: {
+      flex: 1,
+      padding: 16,
+    },
+  });
+
+  const textLines = await vTree.createElement('div', {
+    style: {
+      width: '40%',
+      height: 12,
+      backgroundColor: '#212121',
+      marginTop: 20,
+    },
+  });
+
+  const textLines1 = await vTree.createElement('div', {
+    style: {
+      width: '60%',
+      height: 12,
+      backgroundColor: '#212121',
+      marginTop: 36,
+    },
+  });
+
+  const textLines2 = await vTree.createElement('div', {
+    style: {
+      width: '60%',
+      height: 12,
+      backgroundColor: '#212121',
+      marginTop: 18,
+    },
+  });
+
   await vTree.addChild(statusbar, rootId);
   await vTree.addChild(header, rootId);
   await vTree.addChild(container, rootId);
   await vTree.addChild(card, container);
-  await vTree.addChild(card1, container);
+
   await vTree.addChild(image, card);
+  await vTree.addChild(cardContainer, card);
+  await vTree.addChild(textLines, cardContainer);
+  await vTree.addChild(textLines1, cardContainer);
+  await vTree.addChild(textLines2, cardContainer);
+
+  await vTree.addChild(card1, container);
+  await vTree.addChild(image1, card1);
   await vTree.addChild(text, header);
   await vTree.addChild(fab, rootId);
   await vTree.addChild(plusSign1, fab);
   await vTree.addChild(plusSign2, fab);
-
-  // const parent = await vTree.createElement('div', {
-  //   style: {
-  //     width: '100%',
-  //     height: '100%',
-  //     backgroundColor: 'black',
-  //     padding: 12,
-  //     flexDirection: 'row',
-  //     justifyContent: 'spaceEvenly',
-  //     alignItems: 'center',
-  //   },
-  // });
-
-  // const child1Id = await vTree.createElement('div', {
-  //   style: {
-  //     width: '30%',
-  //     height: 220,
-  //     backgroundColor: 'pink',
-  //     borderRadius: 20,
-  //   },
-  // });
-
-  // const child2Id = await vTree.createElement('div', {
-  //   style: {
-  //     width: '30%',
-  //     height: 220,
-  //     backgroundColor: 'magenta',
-  //     borderRadius: 20,
-  //   },
-  // });
-
-  // await vTree.addChild(child1Id, parent);
-  // await vTree.addChild(child2Id, parent);
 })();
