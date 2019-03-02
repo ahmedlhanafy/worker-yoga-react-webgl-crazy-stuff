@@ -34,6 +34,7 @@ export default class ShadowNode {
       shadowNodeStyles.includes(styleAttr),
     );
 
+
     styles.forEach(styleAttr => {
       const styleVal = this.styles[styleAttr];
       if (styleVal) {

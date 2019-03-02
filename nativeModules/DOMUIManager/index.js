@@ -1,5 +1,6 @@
 /* @flow */
 
+import measureText from 'measure-text';
 import optimizedResizeObserver from '../utils/optimizedResize';
 import type { UIManager } from '../UIManager/types';
 import type { DOMProps, DOMStyles } from '../../src/modules/VTree/Config';
@@ -30,7 +31,7 @@ export default class DOMUIManager implements UIManager {
     styles: DOMStyles,
     isRoot: boolean = false,
   ) {
-    const element = document.createElement(type);
+    const element = document.createElement(type === 'text' ? 'span' : type);
 
     if (isRoot) {
       this.root = element;
@@ -43,6 +44,24 @@ export default class DOMUIManager implements UIManager {
     element.style.contain = 'layout style size';
     this._setProps(element, props);
     this._setStyles(element, styles);
+
+    if (type === 'text') {
+      const measurement = measureText({
+        text: props.value,
+        // fontFamily: 'Georgia',
+        fontSize: styles.fontSize ? `${styles.fontSize}px` : '10px',
+        lineHeight: styles.lineHeight ? styles.lineHeight : 1,
+        fontWeight: styles.fontWeight ? styles.fontWeight : 400,
+        // fontStyle: 'italic',
+      });
+
+      console.log(props.value, measurement)
+
+      return {
+        height: measurement.height.value,
+        width: measurement.width.value,
+      };
+    }
   }
 
   destroyElement(id: number) {
@@ -55,6 +74,9 @@ export default class DOMUIManager implements UIManager {
       switch (propName) {
         case 'source':
           if (element instanceof HTMLImageElement) element.src = prop;
+          break;
+        case 'value':
+          if (element instanceof HTMLSpanElement) element.innerText = prop;
           break;
       }
     });
@@ -84,6 +106,25 @@ export default class DOMUIManager implements UIManager {
 
         case 'zIndex':
           element.style.zIndex = parseInt(styleVal);
+          break;
+
+        case 'fontSize':
+          if (element instanceof HTMLSpanElement)
+            element.style.fontSize = `${styleVal}px`;
+          break;
+
+        case 'color':
+          if (element instanceof HTMLSpanElement) element.style.color = styleVal;
+          break;
+
+        case 'lineHeight':
+          if (element instanceof HTMLSpanElement)
+            element.style.lineHeight = styleVal;
+          break;
+
+        case 'fontWeight':
+          if (element instanceof HTMLSpanElement)
+            element.style.fontWeight = styleVal;
           break;
 
         default:

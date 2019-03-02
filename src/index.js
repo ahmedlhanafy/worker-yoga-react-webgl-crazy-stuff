@@ -43,7 +43,7 @@ import modules from './modules';
     },
   });
 
-  const card = await vTree.createElement('div', {
+  const createCard = async (styles, props) => vTree.createElement('div', {
     style: {
       width: '100%',
       height: 420,
@@ -55,24 +55,13 @@ import modules from './modules';
       },
       shadowBlur: 8,
       borderRadius: 4,
+      ...styles
     },
+    ...props
   });
 
-  const card1 = await vTree.createElement('div', {
-    style: {
-      width: '100%',
-      height: 320,
-      backgroundColor: 'white',
-      shadowColor: 'rgba(0,0,0,0.2)',
-      shadowOffset: {
-        x: 0,
-        y: 6,
-      },
-      shadowBlur: 8,
-      marginTop: 16,
-      borderRadius: 4,
-    },
-  });
+  const card = await createCard();
+  const card1 = await createCard();
 
   const image = await vTree.createElement('img', {
     style: {
@@ -82,19 +71,21 @@ import modules from './modules';
       'https://images.pexels.com/photos/132037/pexels-photo-132037.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350',
   });
 
-  const image1 = await vTree.createElement('div', {
+  const image1 = await vTree.createElement('img', {
     style: {
-      height: 140,
-      backgroundColor: '#651FFF',
+      height: 240,
     },
+    source:
+      'https://res.cloudinary.com/twenty20/private_images/t_watermark-criss-cross-10/v1511893446000/photosp/77569385-9c77-48a2-9dda-ef292ae7919b/stock-photo-nature-water-sun-sky-sea-sunset-beach-sand-mountain-77569385-9c77-48a2-9dda-ef292ae7919b.jpg',
   });
 
-  const text = await vTree.createElement('div', {
+  const text = await vTree.createElement('text', {
     style: {
-      width: 220,
-      height: 12,
-      backgroundColor: 'white',
+      fontSize: 20,
+      fontWeight: 700,
+      color: 'white',
     },
+    value: 'Hello World',
   });
 
   const fab = await vTree.createElement('div', {
@@ -150,31 +141,23 @@ import modules from './modules';
     },
   });
 
-  const textLines = await vTree.createElement('div', {
+  const textLines = await vTree.createElement('text', {
     style: {
-      width: '40%',
-      height: 12,
-      backgroundColor: '#212121',
-      marginTop: 20,
+      fontSize: 20,
+      fontWeight: 700,
+      color: '#212121',
     },
+    value: 'Beautiful Landscapes',
   });
 
-  const textLines1 = await vTree.createElement('div', {
+  const textLines1 = await vTree.createElement('text', {
     style: {
-      width: '60%',
-      height: 12,
-      backgroundColor: '#212121',
+      fontSize: 20,
+      color: '#212121',
       marginTop: 36,
     },
-  });
-
-  const textLines2 = await vTree.createElement('div', {
-    style: {
-      width: '60%',
-      height: 12,
-      backgroundColor: '#212121',
-      marginTop: 18,
-    },
+    value:
+      'Sunt fugiat cillum ullamco enim non reprehenderit veniam velit ex voluptate.',
   });
 
   await vTree.addChild(statusbar, rootId);
@@ -186,7 +169,6 @@ import modules from './modules';
   await vTree.addChild(cardContainer, card);
   await vTree.addChild(textLines, cardContainer);
   await vTree.addChild(textLines1, cardContainer);
-  await vTree.addChild(textLines2, cardContainer);
 
   await vTree.addChild(card1, container);
   await vTree.addChild(image1, card1);

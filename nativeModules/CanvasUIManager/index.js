@@ -1,6 +1,7 @@
 /* @flow */
 
 import Konva from 'konva';
+import measureText from 'measure-text';
 import Node from './Node';
 import type { UIManager } from './types';
 import type { DOMProps, DOMStyles } from '../../src/modules/VTree/Config';
@@ -56,6 +57,22 @@ export default class CanvasUIManager implements UIManager {
 
     this._setProps(node, props);
     this._setStyles(node, id, styles);
+
+    if (type === 'text') {
+      const measurement = measureText({
+        text: props.value,
+        // fontFamily: 'Georgia',
+        // fontSize: '10px',
+        // lineHeight: 1.3,
+        // fontWeight: 500,
+        // fontStyle: 'italic',
+      });
+
+      return {
+        height: measurement.height.value,
+        width: measurement.width.value,
+      };
+    }
   }
 
   destroyElement(id: number) {

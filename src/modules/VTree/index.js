@@ -47,18 +47,22 @@ export default class VTree {
     // Native layer
     const nonLayoutStyles = omit(props.style, shadowNodeStyles);
 
-    await this.uiManager.createElement(
-      id,
-      type,
-      omit(props, 'style'),
-      nonLayoutStyles,
-      isRoot,
-    );
+    const measurements =
+      (await this.uiManager.createElement(
+        id,
+        type,
+        omit(props, 'style'),
+        nonLayoutStyles,
+        isRoot,
+      )) || {};
 
     // Virtual layer
     const layoutStyles = pick(props.style, shadowNodeStyles);
 
-    this.nodesMap[id] = new ShadowNode(id, layoutStyles);
+    this.nodesMap[id] = new ShadowNode(id, {
+      ...layoutStyles,
+      ...measurements,
+    });
 
     return id;
   }
